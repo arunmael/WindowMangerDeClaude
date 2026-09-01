@@ -856,6 +856,150 @@ private let translations: [String: [AppLanguage: String]] = [
         .zhHans: "显示菜单栏图标",
         .zhHant: "顯示選單列圖示",
     ],
+    "settings.launcher": [
+        .ar: "مشغّل التطبيقات",
+        .ca: "Llançador d'apps",
+        .cs: "Spouštěč aplikací",
+        .da: "Appstarter",
+        .de: "App-Launcher",
+        .el: "Εκκινητής εφαρμογών",
+        .en: "App Launcher",
+        .es: "Lanzador de apps",
+        .fi: "Ohjelmien käynnistin",
+        .fr: "Lanceur d'apps",
+        .he: "משגר אפליקציות",
+        .hi: "ऐप लॉन्चर",
+        .hr: "Pokretač aplikacija",
+        .hu: "Alkalmazásindító",
+        .id: "Peluncur Aplikasi",
+        .it: "Launcher di app",
+        .ja: "Appランチャー",
+        .ko: "앱 실행기",
+        .ms: "Pelancar Apl",
+        .nb: "Appstarter",
+        .nl: "App-starter",
+        .pl: "Launcher aplikacji",
+        .pt: "Lançador de apps",
+        .ro: "Lansator de aplicații",
+        .ru: "Лаунчер приложений",
+        .sk: "Spúšťač aplikácií",
+        .sl: "Zaganjalnik aplikacij",
+        .sv: "Appstartare",
+        .th: "ตัวเปิดแอป",
+        .tr: "Uygulama Başlatıcı",
+        .uk: "Лаунчер програм",
+        .vi: "Trình khởi chạy ứng dụng",
+        .zhHans: "应用启动器",
+        .zhHant: "應用程式啟動器",
+    ],
+    "launcher.off": [
+        .ar: "عدم الإظهار",
+        .ca: "No mostrar",
+        .cs: "Nezobrazovat",
+        .da: "Vis ikke",
+        .de: "Nicht anzeigen",
+        .el: "Να μην εμφανίζεται",
+        .en: "Don't show",
+        .es: "No mostrar",
+        .fi: "Älä näytä",
+        .fr: "Ne pas afficher",
+        .he: "לא להציג",
+        .hi: "न दिखाएं",
+        .hr: "Ne prikazuj",
+        .hu: "Ne jelenjen meg",
+        .id: "Jangan tampilkan",
+        .it: "Non mostrare",
+        .ja: "表示しない",
+        .ko: "표시 안 함",
+        .ms: "Jangan tunjukkan",
+        .nb: "Ikke vis",
+        .nl: "Niet tonen",
+        .pl: "Nie pokazuj",
+        .pt: "Não mostrar",
+        .ro: "Nu afișa",
+        .ru: "Не показывать",
+        .sk: "Nezobrazovať",
+        .sl: "Ne prikaži",
+        .sv: "Visa inte",
+        .th: "ไม่แสดง",
+        .tr: "Gösterme",
+        .uk: "Не показувати",
+        .vi: "Không hiện",
+        .zhHans: "不显示",
+        .zhHant: "不顯示",
+    ],
+    "launcher.once": [
+        .ar: "الإظهار مرة واحدة",
+        .ca: "Mostrar un cop",
+        .cs: "Zobrazit jednou",
+        .da: "Vis én gang",
+        .de: "Einmal anzeigen",
+        .el: "Εμφάνιση μία φορά",
+        .en: "Show once",
+        .es: "Mostrar una vez",
+        .fi: "Näytä kerran",
+        .fr: "Afficher une fois",
+        .he: "להציג פעם אחת",
+        .hi: "एक बार दिखाएं",
+        .hr: "Prikaži jednom",
+        .hu: "Egyszer jelenjen meg",
+        .id: "Tampilkan sekali",
+        .it: "Mostra una volta",
+        .ja: "1回だけ表示",
+        .ko: "한 번만 표시",
+        .ms: "Tunjukkan sekali",
+        .nb: "Vis én gang",
+        .nl: "Eén keer tonen",
+        .pl: "Pokaż raz",
+        .pt: "Mostrar uma vez",
+        .ro: "Afișează o dată",
+        .ru: "Показать один раз",
+        .sk: "Zobraziť raz",
+        .sl: "Prikaži enkrat",
+        .sv: "Visa en gång",
+        .th: "แสดงหนึ่งครั้ง",
+        .tr: "Bir kez göster",
+        .uk: "Показати один раз",
+        .vi: "Hiện một lần",
+        .zhHans: "显示一次",
+        .zhHant: "顯示一次",
+    ],
+    "launcher.everyWindow": [
+        .ar: "الإظهار لكل نافذة",
+        .ca: "Mostrar per a cada finestra",
+        .cs: "Zobrazit pro každé okno",
+        .da: "Vis for hvert vindue",
+        .de: "Für jedes Fenster anzeigen",
+        .el: "Εμφάνιση για κάθε παράθυρο",
+        .en: "Show for every window",
+        .es: "Mostrar para cada ventana",
+        .fi: "Näytä joka ikkunalle",
+        .fr: "Afficher pour chaque fenêtre",
+        .he: "להציג לכל חלון",
+        .hi: "हर विंडो के लिए दिखाएं",
+        .hr: "Prikaži za svaki prozor",
+        .hu: "Minden ablaknál jelenjen meg",
+        .id: "Tampilkan untuk setiap jendela",
+        .it: "Mostra per ogni finestra",
+        .ja: "すべてのウインドウで表示",
+        .ko: "모든 윈도우에 표시",
+        .ms: "Tunjukkan untuk setiap tetingkap",
+        .nb: "Vis for hvert vindu",
+        .nl: "Voor elk venster tonen",
+        .pl: "Pokaż dla każdego okna",
+        .pt: "Mostrar para cada janela",
+        .ro: "Afișează pentru fiecare fereastră",
+        .ru: "Показывать для каждого окна",
+        .sk: "Zobraziť pre každé okno",
+        .sl: "Prikaži za vsako okno",
+        .sv: "Visa för varje fönster",
+        .th: "แสดงสำหรับทุกหน้าต่าง",
+        .tr: "Her pencere için göster",
+        .uk: "Показувати для кожного вікна",
+        .vi: "Hiện cho mọi cửa sổ",
+        .zhHans: "为每个窗口显示",
+        .zhHant: "為每個視窗顯示",
+    ],
     "picker.title": [
         .ar: "اختر النافذة",
         .ca: "Tria una finestra",
@@ -1360,18 +1504,43 @@ func glassTint(_ alpha: CGFloat = 0.16) -> NSColor {
 
 // MARK: - Einstellungen: Launcher & Suchpfade
 
+/// Wie oft der App-Launcher nach dem Andocken erscheint.
+enum LauncherMode: String, CaseIterable {
+    /// Gar nicht.
+    case off
+    /// Einmal, fuer die erste freigebliebene Flaeche.
+    case once
+    /// Nacheinander fuer jede freigebliebene Flaeche der gewaehlten Aufteilung,
+    /// bis alle belegt sind oder der Nutzer abbricht.
+    case everyWindow
+
+    var menuTitle: String {
+        switch self {
+        case .off: return L("launcher.off")
+        case .once: return L("launcher.once")
+        case .everyWindow: return L("launcher.everyWindow")
+        }
+    }
+}
+
 enum LauncherSettings {
-    private static let enabledKey = "launcherEnabled"
+    private static let modeKey = "launcherMode"
+    private static let legacyEnabledKey = "launcherEnabled"
     private static let pathsKey = "extraSearchPaths"
 
-    /// Standardmaessig an - der Launcher ist Teil des Kernablaufs.
-    static var isEnabled: Bool {
+    /// Standardmaessig "einmal" - das entspricht dem bisherigen Verhalten.
+    static var mode: LauncherMode {
         get {
-            guard UserDefaults.standard.object(forKey: enabledKey) != nil else { return true }
-            return UserDefaults.standard.bool(forKey: enabledKey)
+            if let raw = UserDefaults.standard.string(forKey: modeKey),
+               let m = LauncherMode(rawValue: raw) { return m }
+            // Uebernahme der frueheren Ja/Nein-Einstellung, damit ein bewusstes
+            // "aus" nicht durch das Update stillschweigend wieder angeht.
+            if UserDefaults.standard.object(forKey: legacyEnabledKey) != nil,
+               UserDefaults.standard.bool(forKey: legacyEnabledKey) == false { return .off }
+            return .once
         }
         set {
-            UserDefaults.standard.set(newValue, forKey: enabledKey)
+            UserDefaults.standard.set(newValue.rawValue, forKey: modeKey)
             NotificationCenter.default.post(name: .launcherSettingsDidChange, object: nil)
         }
     }
@@ -2198,16 +2367,22 @@ func launchAndSnap(appItem: AppItem, layout: SnapLayout) {
     }
 }
 
-func leftoverRect(after layout: SnapLayout, screen: NSScreen) -> CGRect? {
-    let vf = screen.visibleFrame
-    let placed = layout.compute(vf)
-    if vf.maxX - placed.maxX > vf.width * 0.2 {
-        return CGRect(x: placed.maxX, y: vf.minY, width: vf.maxX - placed.maxX, height: vf.height)
+/// Die uebrigen Zonen der Aufteilung, aus der `layout` stammt.
+///
+/// Genau diese Flaechen bleiben durch die getroffene Wahl frei - bei "Viertel"
+/// also drei weitere Viertel, bei "Haelften" die zweite Haelfte. Das ist deutlich
+/// treffsicherer als die frueher rein geometrische Restflaechen-Berechnung, die
+/// bei den Vierteln faelschlich die ganze rechte Bildschirmhaelfte zurueckgab.
+func remainingZones(after layout: SnapLayout) -> [SnapLayout] {
+    for group in snapGroups {
+        guard let idx = group.zones.firstIndex(where: {
+            $0.title == layout.title && $0.previewRect == layout.previewRect
+        }) else { continue }
+        var rest = group.zones
+        rest.remove(at: idx)
+        return rest
     }
-    if placed.minX - vf.minX > vf.width * 0.2 {
-        return CGRect(x: vf.minX, y: vf.minY, width: placed.minX - vf.minX, height: vf.height)
-    }
-    return nil
+    return []
 }
 
 // MARK: - Views (IconView & Flipped View)
@@ -3355,6 +3530,7 @@ final class WindowPickerPanel: NSPanel {
         }
     }
     private var keyMonitor: Any?
+    private var clickMonitor: Any?
     private var onPick: ((AppWindowInfo) -> Void)?
     private var onCancel: (() -> Void)?
 
@@ -3445,6 +3621,18 @@ final class WindowPickerPanel: NSPanel {
 
     private func installKeyMonitor() {
         if let m = keyMonitor { NSEvent.removeMonitor(m); keyMonitor = nil }
+        if let m = clickMonitor { NSEvent.removeMonitor(m); clickMonitor = nil }
+
+        // Klick daneben schliesst die Auswahl - vorher gab es dafuer gar keinen
+        // Weg ausser einer Kachel oder Escape.
+        clickMonitor = NSEvent.addGlobalMonitorForEvents(matching: .leftMouseDown) { [weak self] _ in
+            guard let self, !self.frame.contains(NSEvent.mouseLocation) else { return }
+            let cancel = self.onCancel
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.05) {
+                self.dismiss()
+                cancel?()
+            }
+        }
         keyMonitor = NSEvent.addLocalMonitorForEvents(matching: .keyDown) { [weak self] e in
             guard let self else { return e }
             if e.keyCode == 53 { // Escape
@@ -3488,6 +3676,7 @@ final class WindowPickerPanel: NSPanel {
     func dismiss() {
         guard isVisible else { return }
         if let m = keyMonitor { NSEvent.removeMonitor(m); keyMonitor = nil }
+        if let m = clickMonitor { NSEvent.removeMonitor(m); clickMonitor = nil }
         dismissPanel(self, duration: 0.12) { self.orderOut(nil) }
     }
 }
@@ -3521,8 +3710,28 @@ class SnapAssistPanel: NSPanel, NSSearchFieldDelegate {
     private var searchField: NSSearchField?
     private var closeButton: PanelCloseButton?
     private var windowPicker: WindowPickerPanel?
+    /// Solange die Fensterauswahl offen ist, darf sich der Launcher nicht selbst
+    /// schliessen - die Auswahl liegt ausserhalb seines Rahmens und nimmt ihm den
+    /// Fokus, beides wuerde sonst als "woanders hingeklickt" gewertet.
+    fileprivate var isShowingPicker = false
+    private var placedWindows: [AXUIElement] = []
+
+    /// Fenster, die in dieser Kette noch frei sind.
+    private func freeWindows(from windows: [AppWindowInfo]) -> [AppWindowInfo] {
+        guard !placedWindows.isEmpty else { return windows }
+        return windows.filter { info in
+            !placedWindows.contains { CFEqual($0, info.axElement) }
+        }
+    }
     private var flagsMonitor: Any?
     private var lastModifierFlags: NSEvent.ModifierFlags = []
+
+    /// Ein Fenster wurde in die aktuelle Flaeche gesetzt - es wird gemeldet, damit
+    /// es im naechsten Durchgang nicht erneut angeboten wird. Andere Fenster
+    /// derselben App bleiben waehlbar.
+    var onDidFill: ((AXUIElement?) -> Void)?
+    /// Der Nutzer hat abgebrochen (Escape, Kreuz, Klick daneben) - die Kette endet.
+    var onCancelled: (() -> Void)?
     private var isDismissing = false
     /// Zeitpunkt des Einblendens - kurz danach wird ein Fokusverlust ignoriert,
     /// damit das Panel sich nicht waehrend des eigenen Aufbaus selbst schliesst.
@@ -3530,6 +3739,11 @@ class SnapAssistPanel: NSPanel, NSSearchFieldDelegate {
 
     @objc private func panelDidResignKey() {
         guard isVisible, !isDismissing else { return }
+        // Die Fensterauswahl wird selbst zum Key-Fenster - der dadurch ausgeloeste
+        // Fokusverlust ist kein "der Nutzer ist woanders hin", sondern Teil des
+        // eigenen Ablaufs. Ohne diese Ausnahme beendete das Oeffnen der Auswahl
+        // sofort die Kette.
+        guard !isShowingPicker else { return }
         guard CACurrentMediaTime() - presentedAt > 0.25 else { return }
         dismiss()
     }
@@ -3560,13 +3774,19 @@ class SnapAssistPanel: NSPanel, NSSearchFieldDelegate {
     ///   einem angedockten Fenster oft zu schmal, um den Launcher vollstaendig zu
     ///   zeigen. Er darf jetzt ueber das gerade verschobene Fenster ragen; er liegt
     ///   ohnehin auf einer sehr hohen Fensterebene und damit immer sichtbar davor.
-    func present(in rect: CGRect, screenFrame: CGRect, excludingPID: pid_t) {
+    /// - Parameter placedWindows: bereits in dieser Kette belegte Fenster. Sie
+    ///   werden aus der Fensterauswahl und aus den Badge-Zahlen herausgerechnet.
+    ///   Bewusst fenster- statt app-basiert: eine App mit mehreren Fenstern (etwa
+    ///   Finder) muss weiter waehlbar bleiben, wenn erst eines ihrer Fenster
+    ///   platziert wurde.
+    func present(in rect: CGRect, screenFrame: CGRect, placedWindows: [AXUIElement]) {
         cRect = rect
         self.screenFrame = screenFrame
         isDismissing = false
         
+        self.placedWindows = placedWindows
         let rawOpen = NSWorkspace.shared.runningApplications.filter {
-            $0.activationPolicy == .regular && $0.processIdentifier != excludingPID && !$0.isTerminated
+            $0.activationPolicy == .regular && !$0.isTerminated
         }
         let orderedPIDs = getMRUAppPIDs()
         let pidOrder = Dictionary(uniqueKeysWithValues: orderedPIDs.enumerated().map { ($1, $0) })
@@ -3639,10 +3859,17 @@ class SnapAssistPanel: NSPanel, NSSearchFieldDelegate {
         guard !running.isEmpty else { return }
         let screenH = NSScreen.screens.first?.frame.height ?? 0
 
+        // Kopie fuer den Hintergrund-Thread - `placedWindows` gehoert dem Main-Thread.
+        let placed = placedWindows
+
         DispatchQueue.global(qos: .utility).async { [weak self] in
             var counts: [String: Int] = [:]
             for (id, pid) in running {
-                counts[id] = visibleWindows(of: pid, screenH: screenH).count
+                let windows = visibleWindows(of: pid, screenH: screenH)
+                // Nur noch freie Fenster zaehlen: ein bereits platziertes Fenster
+                // steht nicht mehr zur Wahl und darf die Zahl nicht aufblaehen.
+                counts[id] = placed.isEmpty ? windows.count
+                    : windows.filter { info in !placed.contains { CFEqual($0, info.axElement) } }.count
             }
             DispatchQueue.main.async {
                 guard let self else { return }
@@ -3826,9 +4053,11 @@ class SnapAssistPanel: NSPanel, NSSearchFieldDelegate {
         let layout = SnapLayout(title: "", previewRect: .zero) { _ in rect }
 
         guard a.isRunning, let rApp = a.runningApp else {
-            isDismissing = true
             launchAndSnap(appItem: a, layout: layout)
-            dismiss()
+            // Frisch gestartete App: PID steht noch nicht fest, deshalb 0 - sie
+            // wird im naechsten Durchgang nicht ausgeschlossen. Unkritisch, weil
+            // sie dann als laufende App ohnehin oben in der Liste steht.
+            dismissAfterFill(pid: 0, window: nil)
             return
         }
 
@@ -3839,19 +4068,25 @@ class SnapAssistPanel: NSPanel, NSSearchFieldDelegate {
         // unveraendert und kostet keinen zusaetzlichen Klick.
         let screenH = NSScreen.screens.first?.frame.height ?? 0
         DispatchQueue.global(qos: .userInitiated).async {
-            let windows = visibleWindows(of: pid, screenH: screenH)
+            let all = visibleWindows(of: pid, screenH: screenH)
             DispatchQueue.main.async { [weak self] in
                 guard let self, !self.isDismissing else { return }
 
-                guard windows.count > 1 else {
-                    self.isDismissing = true
-                    snapWindow(pid: pid, layout: layout, window: windows.first?.axElement)
+                // Bereits belegte Fenster fallen raus - sonst boete die Auswahl
+                // Fenster an, die schon an einer anderen Stelle sitzen.
+                let free = self.freeWindows(from: all)
+
+                guard free.count > 1 else {
+                    // Keine freien mehr: dann das fokussierte Fenster nehmen und
+                    // damit faktisch verschieben - eine legitime Nutzerabsicht.
+                    let target = free.first ?? all.first
+                    snapWindow(pid: pid, layout: layout, window: target?.axElement)
                     rApp.activate(options: [])
-                    self.dismiss()
+                    self.dismissAfterFill(pid: pid, window: target?.axElement)
                     return
                 }
 
-                self.showWindowPicker(windows: windows, pid: pid, app: rApp, layout: layout, rect: rect)
+                self.showWindowPicker(windows: free, pid: pid, app: rApp, layout: layout, rect: rect)
             }
         }
     }
@@ -3878,6 +4113,7 @@ class SnapAssistPanel: NSPanel, NSSearchFieldDelegate {
                                   app: NSRunningApplication, layout: SnapLayout, rect: CGRect) {
         let picker = WindowPickerPanel()
         windowPicker = picker
+        isShowingPicker = true
         // Der Launcher tritt waehrend der Auswahl in den Hintergrund, bleibt aber
         // bestehen: bricht der Nutzer ab, ist er wieder da, wo er war.
         alphaValue = 0.25
@@ -3886,8 +4122,8 @@ class SnapAssistPanel: NSPanel, NSSearchFieldDelegate {
             ?? NSScreen.main?.visibleFrame ?? .zero
         picker.present(windows: windows, pid: pid, near: rect, screenFrame: screenFrame, onPick: { [weak self] chosen in
             guard let self else { return }
+            self.isShowingPicker = false
             self.alphaValue = 1
-            self.isDismissing = true
 
             // Erst das gewaehlte Fenster als das aktive markieren und nach vorne
             // holen, DANN die App aktivieren - in dieser Reihenfolge, synchron
@@ -3903,8 +4139,9 @@ class SnapAssistPanel: NSPanel, NSSearchFieldDelegate {
                     snapWindow(pid: pid, layout: layout, window: win)
                 }
             }
-            self.dismiss()
+            self.dismissAfterFill(pid: pid, window: win)
         }, onCancel: { [weak self] in
+            self?.isShowingPicker = false
             self?.alphaValue = 1
             self?.windowPicker = nil
         })
@@ -3945,6 +4182,11 @@ class SnapAssistPanel: NSPanel, NSSearchFieldDelegate {
 
         keyMonitor = NSEvent.addLocalMonitorForEvents(matching: .keyDown) { [weak self] e in
             guard let s = self else { return e }
+            // Solange die Fensterauswahl offen ist, gehoert die Tastatur ihr.
+            // Beide Panels haben einen lokalen Tastatur-Beobachter; ohne diese
+            // Weitergabe verschluckte der Launcher Escape und die Pfeiltasten,
+            // bevor die Auswahl sie ueberhaupt sah.
+            if s.isShowingPicker { return e }
             if e.keyCode == 53 { s.dismiss(); return nil }
             
             if e.keyCode == 36 || e.keyCode == 76 {
@@ -3986,7 +4228,7 @@ class SnapAssistPanel: NSPanel, NSSearchFieldDelegate {
         // ("steigende Flanke") der jeweiligen Taste reagiert.
         lastModifierFlags = []
         flagsMonitor = NSEvent.addLocalMonitorForEvents(matching: .flagsChanged) { [weak self] e in
-            guard let s = self else { return e }
+            guard let s = self, !s.isShowingPicker else { return e }
             let flags = e.modifierFlags.intersection(.deviceIndependentFlagsMask)
             let pressedShift = flags.contains(.shift) && !s.lastModifierFlags.contains(.shift)
             let pressedOption = flags.contains(.option) && !s.lastModifierFlags.contains(.option)
@@ -3998,25 +4240,38 @@ class SnapAssistPanel: NSPanel, NSSearchFieldDelegate {
         }
         
         clickMonitor = NSEvent.addGlobalMonitorForEvents(matching: .leftMouseDown) { [weak self] _ in
-            guard let s = self else { return }
+            guard let s = self, !s.isShowingPicker else { return }
             if !s.frame.contains(NSEvent.mouseLocation) {
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.05) { s.dismiss() }
             }
         }
     }
 
-    func dismiss() {
-        guard isVisible else { return }
-        isDismissing = true
-        
+    private func teardownMonitors() {
         if let m = clickMonitor { NSEvent.removeMonitor(m); clickMonitor = nil }
         if let m = keyMonitor { NSEvent.removeMonitor(m); keyMonitor = nil }
         if let m = flagsMonitor { NSEvent.removeMonitor(m); flagsMonitor = nil }
         NotificationCenter.default.removeObserver(self, name: NSWindow.didResignKeyNotification, object: self)
+    }
 
+    /// Abbruch durch den Nutzer - beendet auch eine laufende Kette.
+    func dismiss() {
+        guard isVisible else { return }
+        isDismissing = true
+        teardownMonitors()
         // contentView und Beobachter bleiben bestehen - sie werden beim naechsten
         // Oeffnen wiederverwendet, das spart den kompletten Neuaufbau.
         dismissPanel(self, duration: 0.12) { self.orderOut(nil) }
+        onCancelled?()
+    }
+
+    /// Eine App wurde platziert - die Kette darf zur naechsten Flaeche weitergehen.
+    private func dismissAfterFill(pid: pid_t, window: AXUIElement?) {
+        guard isVisible else { return }
+        isDismissing = true
+        teardownMonitors()
+        dismissPanel(self, duration: 0.12) { self.orderOut(nil) }
+        onDidFill?(window)
     }
 
     /// Faerbt das Launcher-Glas und alle Auswahlringe live mit der neuen Akzentfarbe.
@@ -4112,7 +4367,7 @@ final class SettingsWindowController: NSObject, NSWindowDelegate,
         stack.addArrangedSubview(sectionHeader(L("settings.general")))
         stack.addArrangedSubview(checkbox(L("settings.startAtLogin"), #selector(toggleLogin), isLoginItemEnabled()))
         stack.addArrangedSubview(checkbox(L("settings.showMenuBarIcon"), #selector(toggleIcon), !GeneralSettings.isStatusIconHidden))
-        stack.addArrangedSubview(checkbox(L("menu.showLauncher"), #selector(toggleLauncher), LauncherSettings.isEnabled))
+        stack.addArrangedSubview(row(L("settings.launcher"), launcherPopup()))
 
         stack.addArrangedSubview(spacer(8))
 
@@ -4170,6 +4425,7 @@ final class SettingsWindowController: NSObject, NSWindowDelegate,
     private var appearanceButton: NSPopUpButton?
     private var languageButton: NSPopUpButton?
     private var colorWell: NSColorWell?
+    private var launcherButton: NSPopUpButton?
 
     private func appearancePopup() -> NSPopUpButton {
         let b = NSPopUpButton()
@@ -4272,6 +4528,12 @@ final class SettingsWindowController: NSObject, NSWindowDelegate,
         }
         colorWell?.color = accentColor()
         colorWell?.isEnabled = DesignTokens.current().accentPickerEnabled
+
+        if let b = launcherButton {
+            let current = LauncherSettings.mode.rawValue
+            b.selectItem(at: b.itemArray.firstIndex { ($0.representedObject as? String) == current } ?? 0)
+        }
+        pathsTable?.isEnabled = LauncherSettings.mode != .off
     }
 
     // MARK: Aktionen
@@ -4285,8 +4547,26 @@ final class SettingsWindowController: NSObject, NSWindowDelegate,
         GeneralSettings.isStatusIconHidden = (sender.state == .off)
     }
 
-    @objc private func toggleLauncher(_ sender: NSButton) {
-        LauncherSettings.isEnabled = (sender.state == .on)
+    private func launcherPopup() -> NSPopUpButton {
+        let b = NSPopUpButton()
+        b.target = self
+        b.action = #selector(launcherModeChanged(_:))
+        for mode in LauncherMode.allCases {
+            b.addItem(withTitle: mode.menuTitle)
+            b.lastItem?.representedObject = mode.rawValue
+        }
+        b.translatesAutoresizingMaskIntoConstraints = false
+        b.widthAnchor.constraint(equalToConstant: 200).isActive = true
+        launcherButton = b
+        return b
+    }
+
+    @objc private func launcherModeChanged(_ sender: NSPopUpButton) {
+        guard let raw = sender.selectedItem?.representedObject as? String,
+              let mode = LauncherMode(rawValue: raw) else { return }
+        LauncherSettings.mode = mode
+        // Suchpfade sind ohne Launcher wirkungslos.
+        pathsTable?.isEnabled = mode != .off
     }
 
     @objc private func appearanceChanged(_ sender: NSPopUpButton) {
@@ -4369,6 +4649,13 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
     /// Rahmen des fokussierten Fensters im Moment des Mausklicks. Referenz fuer die
     /// Frage, ob waehrend des Ziehens tatsaechlich ein FENSTER bewegt wird.
+    /// Noch nicht belegte Flaechen der gewaehlten Aufteilung (Modus "jedes Fenster").
+    var pendingSlots: [SnapLayout] = []
+    /// Bereits in dieser Kette platzierte Fenster - sie stehen im naechsten
+    /// Durchgang nicht mehr zur Wahl. Fenster- statt app-basiert, damit eine App
+    /// mit mehreren Fenstern (etwa Finder) weiter waehlbar bleibt.
+    var chainPlacedWindows: [AXUIElement] = []
+
     var dragStartWindowFrame: CGRect?
     /// Wird true, sobald sich das Fenster nachweislich bewegt hat. Erst dann darf
     /// das Snap-Panel erscheinen - eine aus dem Finder gezogene Datei laesst das
@@ -4446,6 +4733,21 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         
         assistPanel = SnapAssistPanel()
 
+        // Kette: nach jeder platzierten App zur naechsten freien Flaeche weiter,
+        // bei Abbruch die Kette und die Zielmarkierung beenden.
+        assistPanel.onDidFill = { [weak self] window in
+            guard let self else { return }
+            if let window { self.chainPlacedWindows.append(window) }
+            // Kurz warten, bis die Einblend-Animation des Launchers durch ist -
+            // sonst ueberlagern sich Aus- und Einblenden sichtbar.
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.14) {
+                self.advanceLauncherChain()
+            }
+        }
+        assistPanel.onCancelled = { [weak self] in
+            self?.endLauncherChain()
+        }
+
         // Beendete Apps aus dem Wiederherstellungs-Speicher werfen. Ohne das koennte
         // eine spaeter wiederverwendete PID ein voellig fremdes Fenster "zuruecksetzen".
         NSWorkspace.shared.notificationCenter.addObserver(
@@ -4479,9 +4781,40 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     /// verdrahtete Wartezeit von 0,55s - die Restflaeche steht aber sofort fest, das
     /// Panel muss nicht auf die Fensteranimation warten.
     func presentAssist(after layout: SnapLayout, excludingPID pid: pid_t) {
-        guard LauncherSettings.isEnabled else { return }
-        guard let scr = NSScreen.main, let r = leftoverRect(after: layout, screen: scr) else { return }
-        assistPanel.present(in: r, screenFrame: scr.visibleFrame, excludingPID: pid)
+        let mode = LauncherSettings.mode
+        guard mode != .off else { return }
+
+        // Die freigebliebenen Flaechen ergeben sich aus der gewaehlten Aufteilung.
+        pendingSlots = remainingZones(after: layout)
+        if mode == .once { pendingSlots = Array(pendingSlots.prefix(1)) }
+
+        chainPlacedWindows = []
+        advanceLauncherChain()
+    }
+
+    /// Zeigt den Launcher fuer die naechste freie Flaeche - im Modus "einmal"
+    /// genau einmal, im Modus "jedes Fenster" so lange, bis alle Flaechen belegt
+    /// sind oder der Nutzer abbricht.
+    func advanceLauncherChain() {
+        guard let next = pendingSlots.first, let scr = NSScreen.main else {
+            endLauncherChain()
+            return
+        }
+        pendingSlots.removeFirst()
+
+        let rect = next.compute(scr.visibleFrame)
+        // Zielmarkierung: zeigt waehrend der Auswahl, fuer welche Flaeche gerade
+        // eine App gesucht wird. Nutzt dieselbe Hervorhebung wie beim Ziehen.
+        snapPanel.showPreview(for: next)
+
+        assistPanel.present(in: rect, screenFrame: scr.visibleFrame,
+                            placedWindows: chainPlacedWindows)
+    }
+
+    func endLauncherChain() {
+        pendingSlots.removeAll()
+        chainPlacedWindows.removeAll()
+        snapPanel.hidePreview()
     }
 
     /// Prueft nach dem Loslassen, ob ein zuvor gesnapptes Fenster weggezogen wurde.
