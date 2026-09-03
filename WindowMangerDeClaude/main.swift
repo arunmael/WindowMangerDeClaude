@@ -4822,7 +4822,12 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     /// - Parameter pointer: Zeigerposition beim Loslassen. Bei Fingereingabe gibt es
     ///   keinen Zeiger (`NSEvent.mouseLocation` bleibt eingefroren stehen), deshalb
     ///   `nil` - dann wird das Fenster stattdessen um seine eigene Mitte aufgeklappt.
-    func restoreIfDraggedAway(pid: pid_t, pointer: NSPoint?) {
+    /// - Parameter keepSnappedSize: Shift war beim Loslassen gedrueckt - der Nutzer
+    ///   will die gesnappte Groesse bewusst behalten und das Fenster nur an eine
+    ///   andere Stelle verschieben. Es findet dann keine automatische Groessen-
+    ///   Wiederherstellung statt; das Fenster bleibt exakt so, wie der native
+    ///   Fenster-Drag es bereits hingezogen hat.
+    func restoreIfDraggedAway(pid: pid_t, pointer: NSPoint?, keepSnappedSize: Bool = false) {
         guard pid != 0, let entry = WindowRestoreStore.shared.entry(for: pid) else { return }
         guard let firstScreen = NSScreen.screens.first else { return }
 
@@ -4856,6 +4861,15 @@ class AppDelegate: NSObject, NSApplicationDelegate {
                 // Unveraendert liegen geblieben? Dann war es kein Wegziehen.
                 guard abs(current.minX - entry.snappedFrame.minX) > tolerance
                         || abs(current.minY - entry.snappedFrame.minY) > tolerance else { return }
+
+                // Shift gedrueckt: Groesse bewusst beibehalten, nur den Eintrag
+                // verwerfen - sonst wuerde ein spaeteres Ziehen desselben Fensters
+                // (ohne Shift) faelschlich wieder als "noch gesnappt" gelten und die
+                // gerade erst gewaehlte Groesse ungefragt wegrestaurieren.
+                guard !keepSnappedSize else {
+                    WindowRestoreStore.shared.clear(pid)
+                    return
+                }
 
                 let w = entry.freeFrame.width
                 let h = entry.freeFrame.height
@@ -5124,8 +5138,10 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         }
 
         // Kein Snap-Ziel: eventuell wurde ein zuvor gesnapptes Fenster weggezogen
-        // und soll seine urspruengliche Groesse zurueckbekommen.
-        restoreIfDraggedAway(pid: pid, pointer: nil)
+        // und soll seine urspruengliche Groesse zurueckbekommen - ausser eine an
+        // das iPad angeschlossene Tastatur haelt Shift gedrueckt.
+        let shiftHeld = NSEvent.modifierFlags.intersection(.deviceIndependentFlagsMask).contains(.shift)
+        restoreIfDraggedAway(pid: pid, pointer: nil, keepSnappedSize: shiftHeld)
     }
 
     func handle(_ e: NSEvent) {
@@ -5194,8 +5210,13 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
             guard visible else {
                 // Kein Snap-Panel offen, aber es wurde gezogen: eventuell wurde ein
-                // gesnapptes Fenster weggezogen und will seine alte Groesse zurueck.
-                if wasDragging { restoreIfDraggedAway(pid: dragPID, pointer: NSEvent.mouseLocation) }
+                // gesnapptes Fenster weggezogen und will seine alte Groesse zurueck -
+                // ausser der Nutzer haelt Shift, dann soll die gesnappte Groesse an
+                // der neuen Stelle bleiben.
+                if wasDragging {
+                    let shiftHeld = e.modifierFlags.intersection(.deviceIndependentFlagsMask).contains(.shift)
+                    restoreIfDraggedAway(pid: dragPID, pointer: NSEvent.mouseLocation, keepSnappedSize: shiftHeld)
+                }
                 break
             }
 
