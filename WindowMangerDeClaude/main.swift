@@ -4826,8 +4826,15 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     ///   will die gesnappte Groesse bewusst behalten und das Fenster nur an eine
     ///   andere Stelle verschieben. Es findet dann keine automatische Groessen-
     ///   Wiederherstellung statt; das Fenster bleibt exakt so, wie der native
-    ///   Fenster-Drag es bereits hingezogen hat.
-    func restoreIfDraggedAway(pid: pid_t, pointer: NSPoint?, keepSnappedSize: Bool = false) {
+    ///   Fenster-Drag es bereits hingezogen hat. Der urspruengliche freie Rahmen
+    ///   bleibt dabei weiter gemerkt (nicht geloescht), damit ein spaeteres
+    ///   Shift-Ziehen noch per `jumpToOriginalPosition` dorthin zurueckspringen kann.
+    /// - Parameter jumpToOriginalPosition: Shift war beim Loslassen gedrueckt - das
+    ///   Fenster springt direkt an die Stelle (Position UND Groesse) zurueck, die es
+    ///   hatte, bevor der Window Manager es ueberhaupt zum ersten Mal gesnappt hat -
+    ///   unabhaengig davon, wie oft es seither (z.B. mit Cmd) an andere Stellen
+    ///   weitergezogen wurde. Hat Vorrang vor `keepSnappedSize`.
+    func restoreIfDraggedAway(pid: pid_t, pointer: NSPoint?, keepSnappedSize: Bool = false, jumpToOriginalPosition: Bool = false) {
         guard pid != 0, let entry = WindowRestoreStore.shared.entry(for: pid) else { return }
         guard let firstScreen = NSScreen.screens.first else { return }
 
@@ -4862,12 +4869,29 @@ class AppDelegate: NSObject, NSApplicationDelegate {
                 guard abs(current.minX - entry.snappedFrame.minX) > tolerance
                         || abs(current.minY - entry.snappedFrame.minY) > tolerance else { return }
 
-                // Cmd gedrueckt: Groesse bewusst beibehalten, nur den Eintrag
-                // verwerfen - sonst wuerde ein spaeteres Ziehen desselben Fensters
-                // (ohne Cmd) faelschlich wieder als "noch gesnappt" gelten und die
-                // gerade erst gewaehlte Groesse ungefragt wegrestaurieren.
-                guard !keepSnappedSize else {
+                // Shift gedrueckt: bewusst ganz zurueck an die Stelle, die das
+                // Fenster hatte, bevor der Window Manager es ueberhaupt zum ersten
+                // Mal gesnappt hat - unabhaengig davon, wie oft es seither mit Cmd
+                // an eine neue Stelle (aber mit gesnappter Groesse) weitergezogen
+                // wurde. Danach ist der urspruengliche Zustand wiederhergestellt,
+                // der Eintrag wird verworfen.
+                if jumpToOriginalPosition {
                     WindowRestoreStore.shared.clear(pid)
+                    animateFocusedWindow(pid: pid, to: entry.freeFrame)
+                    return
+                }
+
+                // Cmd gedrueckt: Groesse UND Position bewusst so beibehalten, wie
+                // der native Fenster-Drag sie gerade hingezogen hat. Anders als
+                // zuvor wird der Eintrag dabei NICHT verworfen, sondern nur sein
+                // "gesnappter" Referenzrahmen auf die neue Stelle nachgezogen
+                // (`recordSnap` laesst `freeFrame` bei einem bestehenden Eintrag
+                // unangetastet) - sonst koennte ein spaeteres Shift-Ziehen nicht
+                // mehr zum urspruenglichen freien Rahmen zurueckfinden. Ein
+                // folgendes Ziehen ganz ohne Taste behandelt diese neue Stelle
+                // dadurch korrekt wieder als "gesnappt".
+                guard !keepSnappedSize else {
+                    WindowRestoreStore.shared.recordSnap(pid: pid, freeFrameCandidate: entry.freeFrame, snappedFrame: current)
                     return
                 }
 
@@ -5139,9 +5163,12 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
         // Kein Snap-Ziel: eventuell wurde ein zuvor gesnapptes Fenster weggezogen
         // und soll seine urspruengliche Groesse zurueckbekommen - ausser eine an
-        // das iPad angeschlossene Tastatur haelt Cmd gedrueckt.
-        let cmdHeld = NSEvent.modifierFlags.intersection(.deviceIndependentFlagsMask).contains(.command)
-        restoreIfDraggedAway(pid: pid, pointer: nil, keepSnappedSize: cmdHeld)
+        // das iPad angeschlossene Tastatur haelt Cmd (Groesse behalten) oder
+        // Shift (ganz zurueck zum urspruenglichen Rahmen) gedrueckt.
+        let flags = NSEvent.modifierFlags.intersection(.deviceIndependentFlagsMask)
+        restoreIfDraggedAway(pid: pid, pointer: nil,
+                             keepSnappedSize: flags.contains(.command),
+                             jumpToOriginalPosition: flags.contains(.shift))
     }
 
     func handle(_ e: NSEvent) {
@@ -5211,11 +5238,13 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             guard visible else {
                 // Kein Snap-Panel offen, aber es wurde gezogen: eventuell wurde ein
                 // gesnapptes Fenster weggezogen und will seine alte Groesse zurueck -
-                // ausser der Nutzer haelt Cmd, dann soll die gesnappte Groesse an
-                // der neuen Stelle bleiben.
+                // ausser der Nutzer haelt Cmd (Groesse an der neuen Stelle behalten)
+                // oder Shift (ganz zurueck zum urspruenglichen, vor-gesnappten Rahmen).
                 if wasDragging {
-                    let cmdHeld = e.modifierFlags.intersection(.deviceIndependentFlagsMask).contains(.command)
-                    restoreIfDraggedAway(pid: dragPID, pointer: NSEvent.mouseLocation, keepSnappedSize: cmdHeld)
+                    let flags = e.modifierFlags.intersection(.deviceIndependentFlagsMask)
+                    restoreIfDraggedAway(pid: dragPID, pointer: NSEvent.mouseLocation,
+                                         keepSnappedSize: flags.contains(.command),
+                                         jumpToOriginalPosition: flags.contains(.shift))
                 }
                 break
             }
