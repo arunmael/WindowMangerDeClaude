@@ -1468,6 +1468,60 @@ private let translations: [String: [AppLanguage: String]] = [
         .zhHans: "要移动窗口，请在“系统设置”的“隐私与安全性”>“辅助功能”中允许此应用的访问权限，然后重新启动应用。",
         .zhHant: "若要移動視窗，請在「系統設定」的「隱私權與安全性」>「輔助使用」中允許此應用程式的存取權限，然後重新啟動應用程式。",
     ],
+    // Die uebrigen 32 Sprachen fallen bewusst auf Englisch zurueck; erfundene
+    // Uebersetzungen waeren schlechter als der dokumentierte Rueckfall in `L`.
+    "settings.snapZones": [
+        .de: "Snap-Zonen konfigurieren", .en: "Configure Snap Zones",
+    ],
+    "snapZones.inventory": [
+        .de: "Bausteine", .en: "Building Blocks",
+    ],
+    "snapZones.hint": [
+        .de: "Zieh einen Baustein in einen Slot. Ein Klick auf einen platzierten Baustein entfernt ihn.",
+        .en: "Drag a block into a slot. Click a placed block to remove it.",
+    ],
+    "snapZones.slot.empty": [
+        .de: "leer", .en: "empty",
+    ],
+    "snapZones.reset": [
+        .de: "Standard wiederherstellen", .en: "Restore Defaults",
+    ],
+    "snapZones.save": [
+        .de: "Anordnung sichern…", .en: "Save Arrangement…",
+    ],
+    "snapZones.save.prompt": [
+        .de: "Name der Anordnung", .en: "Arrangement name",
+    ],
+    // Ueber die Tabelle statt ueber NSLocalizedString: die App bringt keine
+    // .strings-Datei mit, ein NSLocalizedString bliebe also immer englisch.
+    "snapZones.cancel": [
+        .de: "Abbrechen", .en: "Cancel",
+    ],
+    "snapZones.save.limit": [
+        .de: "Es sind höchstens drei eigene Anordnungen möglich. Lösche zuerst eine bestehende.",
+        .en: "You can keep at most three arrangements. Delete one first.",
+    ],
+    "snapZones.delete": [
+        .de: "Anordnung löschen", .en: "Delete Arrangement",
+    ],
+    "snapZones.profile.none": [
+        .de: "Keine gesicherte Anordnung", .en: "No saved arrangement",
+    ],
+    "block.full": [
+        .de: "Vollbild", .en: "Full Screen",
+    ],
+    "block.twoThirds": [
+        .de: "Zwei Drittel", .en: "Two Thirds",
+    ],
+    "block.half": [
+        .de: "Hälfte", .en: "Half",
+    ],
+    "block.third": [
+        .de: "Drittel", .en: "Third",
+    ],
+    "block.quarter": [
+        .de: "Viertel", .en: "Quarter",
+    ],
 ]
 
 /// Liefert den Text fuer `key` in der aktuell aktiven Sprache. Fehlt ein Eintrag
@@ -1762,7 +1816,7 @@ struct DesignTokens {
 }
 
 /// Feste Palette in Calm: jede Zonen-Gruppe traegt ihre eigene Farbe statt der
-/// globalen Akzentfarbe - macht die vier Andock-Kategorien auf einen Blick
+/// globalen Akzentfarbe - macht die konfigurierten Andock-Kategorien auf einen Blick
 /// unterscheidbar, ganz ohne Text.
 extension SnapGroup {
     var calmColor: NSColor {
@@ -1776,15 +1830,12 @@ extension SnapGroup {
 }
 
 /// Liefert die Zonenfarbe fuer den aktuellen Modus: in Calm die Palettenfarbe der
-/// Gruppe, die `layout` enthaelt; sonst die globale Akzentfarbe. Der Abgleich laeuft
-/// ueber den Zonentitel, da `SnapLayout` keine eigene Identitaet traegt und Titel
-/// innerhalb einer Ziehgeste eindeutig sind.
+/// Gruppe, die `layout` enthaelt; sonst die globale Akzentfarbe. Die Gruppen-ID
+/// bleibt auch bei generierten oder mehrfach vorkommenden Titeln eindeutig.
 func zoneColor(for layout: SnapLayout, tokens: DesignTokens) -> NSColor {
     guard tokens.usesGroupPalette else { return tokens.accent }
-    for group in snapGroups where group.zones.contains(where: { $0.title == layout.title }) {
-        return group.calmColor
-    }
-    return tokens.accent
+    guard let group = snapGroups.first(where: { $0.id == layout.groupID }) else { return tokens.accent }
+    return group.calmColor
 }
 
 extension NSFont {
@@ -1850,45 +1901,13 @@ func toggleLoginItem() {
     }
 }
 
-// MARK: - Snap Layout Model
+// MARK: - Snap Layout Zugriff
 
-struct SnapLayout {
-    let title: String
-    let previewRect: CGRect
-    let compute: (CGRect) -> CGRect
-}
-
-struct SnapGroup {
-    let id: Int
-    let zones: [SnapLayout]
-}
-
-let snapGroups: [SnapGroup] = [
-    SnapGroup(id: 0, zones: [
-        SnapLayout(title: "Vollbild", previewRect: CGRect(x: 0, y: 0, width: 1, height: 1)) { r in
-            CGRect(x: r.minX, y: r.minY, width: r.width, height: r.height)
-        }
-    ]),
-    SnapGroup(id: 1, zones: [
-        SnapLayout(title: "← ½", previewRect: CGRect(x: 0, y: 0, width: 0.5, height: 1)) { r in CGRect(x: r.minX, y: r.minY, width: r.width / 2, height: r.height) },
-        SnapLayout(title: "→ ½", previewRect: CGRect(x: 0.5, y: 0, width: 0.5, height: 1)) { r in CGRect(x: r.minX + r.width / 2, y: r.minY, width: r.width / 2, height: r.height) }
-    ]),
-    SnapGroup(id: 2, zones: [
-        SnapLayout(title: "← ⅔", previewRect: CGRect(x: 0, y: 0, width: 0.667, height: 1)) { r in CGRect(x: r.minX, y: r.minY, width: r.width * 2 / 3, height: r.height) },
-        SnapLayout(title: "→ ⅓", previewRect: CGRect(x: 0.667, y: 0, width: 0.333, height: 1)) { r in CGRect(x: r.minX + r.width * 2 / 3, y: r.minY, width: r.width / 3, height: r.height) }
-    ]),
-    SnapGroup(id: 3, zones: [
-        SnapLayout(title: "← ½", previewRect: CGRect(x: 0, y: 0, width: 0.5, height: 1)) { r in CGRect(x: r.minX, y: r.minY, width: r.width / 2, height: r.height) },
-        SnapLayout(title: "↗ ¼", previewRect: CGRect(x: 0.5, y: 0.5, width: 0.5, height: 0.5)) { r in CGRect(x: r.minX + r.width / 2, y: r.minY + r.height / 2, width: r.width / 2, height: r.height / 2) },
-        SnapLayout(title: "↘ ¼", previewRect: CGRect(x: 0.5, y: 0, width: 0.5, height: 0.5)) { r in CGRect(x: r.minX + r.width / 2, y: r.minY, width: r.width / 2, height: r.height / 2) }
-    ]),
-    SnapGroup(id: 4, zones: [
-        SnapLayout(title: "↖", previewRect: CGRect(x: 0, y: 0.5, width: 0.5, height: 0.5)) { r in CGRect(x: r.minX, y: r.minY + r.height / 2, width: r.width / 2, height: r.height / 2) },
-        SnapLayout(title: "↗", previewRect: CGRect(x: 0.5, y: 0.5, width: 0.5, height: 0.5)) { r in CGRect(x: r.minX + r.width / 2, y: r.minY + r.height / 2, width: r.width / 2, height: r.height / 2) },
-        SnapLayout(title: "↙", previewRect: CGRect(x: 0, y: 0, width: 0.5, height: 0.5)) { r in CGRect(x: r.minX, y: r.minY, width: r.width / 2, height: r.height / 2) },
-        SnapLayout(title: "↘", previewRect: CGRect(x: 0.5, y: 0, width: 0.5, height: 0.5)) { r in CGRect(x: r.minX + r.width / 2, y: r.minY, width: r.width / 2, height: r.height / 2) }
-    ])
-]
+/// Die aktuell konfigurierten Aufteilungen. Frueher eine feste Konstante -
+/// seit dem Zonen-Konfigurator kommen sie aus den Einstellungen des Nutzers.
+/// Der Store haelt das Ergebnis gecacht, der Zugriff ist also billig genug
+/// fuer den Zeichenpfad.
+var snapGroups: [SnapGroup] { SnapZoneStore.shared.groups }
 
 // MARK: - App Models & Cache
 
@@ -2324,7 +2343,7 @@ func animateFocusedWindow(pid: pid_t,
 func snapWindow(pid: pid_t, layout: SnapLayout, window: AXUIElement? = nil) {
     guard let screen = NSScreen.main else { return }
     let target = layout.compute(screen.visibleFrame)
-    let isFullscreen = layout.title == "Vollbild"
+    let isFullscreen = layout.isFullscreen
 
     // Jeder Snap-Weg laeuft hier durch, deshalb wird die Vorher-Groesse zentral an
     // genau einer Stelle festgehalten - unabhaengig davon, ob der Snap aus dem Panel,
@@ -2374,15 +2393,11 @@ func launchAndSnap(appItem: AppItem, layout: SnapLayout) {
 /// treffsicherer als die frueher rein geometrische Restflaechen-Berechnung, die
 /// bei den Vierteln faelschlich die ganze rechte Bildschirmhaelfte zurueckgab.
 func remainingZones(after layout: SnapLayout) -> [SnapLayout] {
-    for group in snapGroups {
-        guard let idx = group.zones.firstIndex(where: {
-            $0.title == layout.title && $0.previewRect == layout.previewRect
-        }) else { continue }
-        var rest = group.zones
-        rest.remove(at: idx)
-        return rest
-    }
-    return []
+    guard let group = snapGroups.first(where: { $0.id == layout.groupID }),
+          let idx = group.zones.firstIndex(where: { $0.previewRect == layout.previewRect }) else { return [] }
+    var rest = group.zones
+    rest.remove(at: idx)
+    return rest
 }
 
 // MARK: - Views (IconView & Flipped View)
@@ -4299,6 +4314,33 @@ class SnapAssistPanel: NSPanel, NSSearchFieldDelegate {
 
 // MARK: - Einstellungsfenster
 
+/// Eine eigene Datenquelle haelt die Seitenleisten-Auswahl von den bestehenden
+/// Suchpfad-Callbacks getrennt; dadurch brauchen deren Selektoren keine Tabellen-
+/// Identitaeten zu verzweigen und bleiben unveraendert.
+private final class SettingsSidebarDataSource: NSObject,
+                                               NSTableViewDataSource, NSTableViewDelegate {
+    let titles: [String]
+    var onSelection: ((Int) -> Void)?
+
+    init(titles: [String]) {
+        self.titles = titles
+    }
+
+    func numberOfRows(in tableView: NSTableView) -> Int { titles.count }
+
+    func tableView(_ tableView: NSTableView, viewFor tableColumn: NSTableColumn?, row: Int) -> NSView? {
+        let label = NSTextField(labelWithString: titles[row])
+        label.font = .systemFont(ofSize: 13)
+        label.lineBreakMode = .byTruncatingTail
+        return label
+    }
+
+    func tableViewSelectionDidChange(_ notification: Notification) {
+        guard let table = notification.object as? NSTableView, table.selectedRow >= 0 else { return }
+        onSelection?(table.selectedRow)
+    }
+}
+
 /// Eigenstaendiges Einstellungsfenster.
 ///
 /// Bewusst ein Fenster statt eines Menueleisten-Menues: Ist das Symbol
@@ -4311,6 +4353,10 @@ final class SettingsWindowController: NSObject, NSWindowDelegate,
     private var pathsTable: NSTableView?
     private var paths: [String] = []
     private var removeButton: NSButton?
+    private var sidebarDataSource: SettingsSidebarDataSource?
+    private var contentContainer: NSView?
+    private var pageViews: [NSView] = []
+    private var selectedPageIndex = 0
 
     private override init() {
         super.init()
@@ -4341,50 +4387,125 @@ final class SettingsWindowController: NSObject, NSWindowDelegate,
     // MARK: Aufbau
 
     private func buildWindow() {
-        let w = NSWindow(contentRect: NSRect(x: 0, y: 0, width: 480, height: 560),
-                         styleMask: [.titled, .closable, .miniaturizable],
+        let w = NSWindow(contentRect: NSRect(x: 0, y: 0, width: 780, height: 620),
+                         styleMask: [.titled, .closable, .miniaturizable, .resizable],
                          backing: .buffered, defer: false)
         w.title = L("settings.title")
         w.delegate = self
         w.isReleasedWhenClosed = false
+        w.contentMinSize = NSSize(width: 750, height: 500)
 
         let root = NSView()
-        let stack = NSStackView()
+        let split = NSSplitView()
+        split.isVertical = true
+        split.dividerStyle = .thin
+        split.translatesAutoresizingMaskIntoConstraints = false
+        root.addSubview(split)
+
+        let sidebarTable = NSTableView()
+        let sidebarColumn = NSTableColumn(identifier: NSUserInterfaceItemIdentifier("settingsPage"))
+        sidebarColumn.width = 190
+        sidebarTable.addTableColumn(sidebarColumn)
+        sidebarTable.headerView = nil
+        // `style` bringt die Source-List-Hervorhebung bereits mit - der frueher
+        // noetige `selectionHighlightStyle` ist veraltet und hier ueberfluessig.
+        sidebarTable.style = .sourceList
+        sidebarTable.rowHeight = 28
+
+        let dataSource = SettingsSidebarDataSource(titles: [
+            L("settings.general"),
+            L("menu.appearance"),
+            L("menu.searchPaths"),
+            L("settings.snapZones"),
+        ])
+        dataSource.onSelection = { [weak self] index in self?.showPage(at: index) }
+        sidebarTable.dataSource = dataSource
+        sidebarTable.delegate = dataSource
+        sidebarDataSource = dataSource
+
+        let sidebarScroll = NSScrollView()
+        sidebarScroll.documentView = sidebarTable
+        sidebarScroll.hasVerticalScroller = false
+        sidebarScroll.drawsBackground = true
+        sidebarScroll.translatesAutoresizingMaskIntoConstraints = false
+
+        let detail = NSView()
+        detail.translatesAutoresizingMaskIntoConstraints = false
+        contentContainer = detail
+        pageViews = [generalPage(), appearancePage(), searchPathsPage(), SnapZoneConfigView()]
+
+        split.addArrangedSubview(sidebarScroll)
+        split.addArrangedSubview(detail)
+        split.setHoldingPriority(.defaultHigh, forSubviewAt: 0)
+
+        NSLayoutConstraint.activate([
+            split.topAnchor.constraint(equalTo: root.topAnchor),
+            split.leadingAnchor.constraint(equalTo: root.leadingAnchor),
+            split.trailingAnchor.constraint(equalTo: root.trailingAnchor),
+            split.bottomAnchor.constraint(equalTo: root.bottomAnchor),
+            sidebarScroll.widthAnchor.constraint(equalToConstant: 190),
+            detail.widthAnchor.constraint(greaterThanOrEqualToConstant: 559),
+        ])
+
+        w.contentView = root
+        window = w
+        selectedPageIndex = min(max(selectedPageIndex, 0), pageViews.count - 1)
+        sidebarTable.selectRowIndexes(IndexSet(integer: selectedPageIndex), byExtendingSelection: false)
+        showPage(at: selectedPageIndex)
+    }
+
+    private func generalPage() -> NSView {
+        settingsPage(title: L("settings.general"), views: [
+            checkbox(L("settings.startAtLogin"), #selector(toggleLogin), isLoginItemEnabled()),
+            checkbox(L("settings.showMenuBarIcon"), #selector(toggleIcon), !GeneralSettings.isStatusIconHidden),
+            row(L("settings.launcher"), launcherPopup()),
+        ])
+    }
+
+    private func appearancePage() -> NSView {
+        settingsPage(title: L("menu.appearance"), views: [
+            row(L("menu.appearance"), appearancePopup()),
+            row(L("settings.accentColor"), accentWell()),
+            row(L("menu.language"), languagePopup()),
+        ])
+    }
+
+    private func searchPathsPage() -> NSView {
+        settingsPage(title: L("menu.searchPaths"), views: [pathsSection()])
+    }
+
+    private func settingsPage(title: String, views: [NSView]) -> NSView {
+        let root = NSView()
+        root.translatesAutoresizingMaskIntoConstraints = false
+        let stack = NSStackView(views: [sectionHeader(title)] + views)
         stack.orientation = .vertical
         stack.alignment = .leading
         stack.spacing = 10
         stack.translatesAutoresizingMaskIntoConstraints = false
         root.addSubview(stack)
-
         NSLayoutConstraint.activate([
             stack.topAnchor.constraint(equalTo: root.topAnchor, constant: 20),
             stack.leadingAnchor.constraint(equalTo: root.leadingAnchor, constant: 20),
-            stack.trailingAnchor.constraint(equalTo: root.trailingAnchor, constant: -20),
+            stack.trailingAnchor.constraint(lessThanOrEqualTo: root.trailingAnchor, constant: -20),
             stack.bottomAnchor.constraint(lessThanOrEqualTo: root.bottomAnchor, constant: -20),
         ])
+        return root
+    }
 
-        // --- Allgemein ---
-        stack.addArrangedSubview(sectionHeader(L("settings.general")))
-        stack.addArrangedSubview(checkbox(L("settings.startAtLogin"), #selector(toggleLogin), isLoginItemEnabled()))
-        stack.addArrangedSubview(checkbox(L("settings.showMenuBarIcon"), #selector(toggleIcon), !GeneralSettings.isStatusIconHidden))
-        stack.addArrangedSubview(row(L("settings.launcher"), launcherPopup()))
-
-        stack.addArrangedSubview(spacer(8))
-
-        // --- Darstellung ---
-        stack.addArrangedSubview(sectionHeader(L("menu.appearance")))
-        stack.addArrangedSubview(row(L("menu.appearance"), appearancePopup()))
-        stack.addArrangedSubview(row(L("settings.accentColor"), accentWell()))
-        stack.addArrangedSubview(row(L("menu.language"), languagePopup()))
-
-        stack.addArrangedSubview(spacer(8))
-
-        // --- Suchpfade ---
-        stack.addArrangedSubview(sectionHeader(L("menu.searchPaths")))
-        stack.addArrangedSubview(pathsSection())
-
-        w.contentView = root
-        window = w
+    private func showPage(at index: Int) {
+        guard pageViews.indices.contains(index), let container = contentContainer else { return }
+        selectedPageIndex = index
+        container.subviews.forEach { $0.removeFromSuperview() }
+        let page = pageViews[index]
+        page.translatesAutoresizingMaskIntoConstraints = false
+        container.addSubview(page)
+        NSLayoutConstraint.activate([
+            page.topAnchor.constraint(equalTo: container.topAnchor),
+            page.leadingAnchor.constraint(equalTo: container.leadingAnchor),
+            page.trailingAnchor.constraint(equalTo: container.trailingAnchor),
+            page.bottomAnchor.constraint(equalTo: container.bottomAnchor),
+        ])
+        reloadValues()
     }
 
     private func sectionHeader(_ text: String) -> NSView {
@@ -4392,13 +4513,6 @@ final class SettingsWindowController: NSObject, NSWindowDelegate,
         l.font = .systemFont(ofSize: 10, weight: .semibold)
         l.textColor = .secondaryLabelColor
         return l
-    }
-
-    private func spacer(_ height: CGFloat) -> NSView {
-        let v = NSView()
-        v.translatesAutoresizingMaskIntoConstraints = false
-        v.heightAnchor.constraint(equalToConstant: height).isActive = true
-        return v
     }
 
     private func checkbox(_ title: String, _ action: Selector, _ on: Bool) -> NSButton {
@@ -5282,6 +5396,8 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         // sich aendern) und faerbt die Zellen im Launcher-Pool nach.
         NotificationCenter.default.addObserver(self, selector: #selector(designModeDidChange),
                                                name: .designModeDidChange, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(snapZonesDidChange),
+                                               name: .snapZonesDidChange, object: nil)
 
         NotificationCenter.default.addObserver(self, selector: #selector(statusIconVisibilityChanged),
                                                name: .statusIconVisibilityDidChange, object: nil)
@@ -5308,6 +5424,13 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         rebuildMenu() // "Akzentfarbe aendern..." wird in Calm deaktiviert
         snapPanel.refreshDesign()
         assistPanel.refreshDesign()
+    }
+
+    @objc private func snapZonesDidChange() {
+        DispatchQueue.main.async { [weak self] in
+            self?.snapPanel.refreshDesign()
+            self?.assistPanel.refreshDesign()
+        }
     }
 
     /// Das Menueleisten-Symbol traegt nur noch zwei Eintraege: Alle Einstellungen
