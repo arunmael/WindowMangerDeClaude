@@ -39,6 +39,41 @@ struct SnapLayout {
     var isFullscreen: Bool {
         abs(previewRect.width - 1) < 0.001 && abs(previewRect.height - 1) < 0.001
     }
+
+    /// Nur der vorgesehene Slot darf Spaces oeffnen, nicht jede eigene Vollbild-Zone.
+    var isNativeFullscreen: Bool {
+        isFullscreen && groupID == SnapZoneDefaults.nativeFullscreenSlot
+    }
+
+    /// "Ganze Bildschirmgroesse": das Ad-hoc-Layout fuer einen Drop, der im Panel
+    /// (oder darueber) landet, ohne eine Zonen-Kachel zu treffen.
+    ///
+    /// Der Titel muss sich von "Vollbild" unterscheiden, obwohl die Geometrie
+    /// identisch ist: die Zielvorschau schluesselt ihren Cache ueber Titel und
+    /// Einheitsrechteck, sonst bliebe beim Wechsel zwischen beiden die alte,
+    /// bildschirmfuellende Markierung stehen.
+    static var maximized: SnapLayout {
+        SnapLayout(title: "Ganzer Bildschirm", previewRect: CGRect(x: 0, y: 0, width: 1, height: 1),
+                   groupID: -1) { $0 }
+    }
+}
+
+/// Wo gilt "keine Zone getroffen" als Maximieren?
+///
+/// Bewusst hier statt im Panel: eine reine Rechteckfrage laesst sich ohne laufende
+/// App pruefen, waehrend alles an `NSWindow` haengt.
+enum SnapPanelHitRegion {
+    /// Wahr im Panel selbst - also auch in den Luecken zwischen den Kacheln - und in
+    /// dem Streifen DARUEBER bis zum oberen Bildschirmrand. Genau dort landet der
+    /// Zeiger, wenn das Panel gerade erschienen ist und der Nutzer noch keine Kachel
+    /// angesteuert hat. Ueberall sonst falsch: ein Loslassen mitten auf dem
+    /// Schreibtisch darf das Fenster nicht ungefragt aufziehen.
+    ///
+    /// Koordinaten wie ueberall im Projekt mit Ursprung unten links; Kanten zaehlen dazu.
+    static func isMaximize(point: CGPoint, panelFrame: CGRect, screenFrame: CGRect) -> Bool {
+        point.x >= panelFrame.minX && point.x <= panelFrame.maxX
+            && point.y >= panelFrame.minY && point.y <= screenFrame.maxY
+    }
 }
 
 /// Eine komplette Bildschirmaufteilung - im Panel eine Kachel, in den
@@ -226,6 +261,10 @@ enum SnapSlotPacker {
 // MARK: - Werkseinstellung
 
 enum SnapZoneDefaults {
+    /// Nur die Vollbild-Zone aus diesem Slot schickt das Fenster in echtes
+    /// macOS-Fullscreen. Dieselbe Form in einem selbst gebauten Slot maximiert
+    /// weiterhin nur - eine eigene Anordnung soll nicht ungewollt Spaces aufmachen.
+    static let nativeFullscreenSlot = 0
     /// Fuenf konfigurierbare Slots - so viele Kacheln zeigt das Panel maximal.
     static let slotCount = 5
     /// Mehr eigene Anordnungen sollen es laut Spezifikation nicht werden.

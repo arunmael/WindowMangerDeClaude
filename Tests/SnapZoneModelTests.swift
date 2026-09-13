@@ -75,6 +75,9 @@ enum SnapZoneModelTests {
         testFreeWidth()
         testTitles()
         testSnapLayout()
+        testNativeFullscreen()
+        testMaximizedLayout()
+        testPanelHitRegion()
         testStoreBasics()
         testStorePersistence()
         testEmptySlots()
@@ -234,6 +237,74 @@ enum SnapZoneModelTests {
         let zone = store.groups[0].zones[1]
         check(rectsAlmostEqual(zone.compute(screen), CGRect(x: 900, y: 50, width: 800, height: 900)),
               "compute() rechnet das Einheitsrechteck in den Bildschirm um, bekommen: \(zone.compute(screen))")
+    }
+
+    // MARK: Echtes Vollbild vs. ganze Bildschirmgroesse
+
+    // Zwei verschiedene Dinge, die bisher eines waren:
+    // * "ganze Bildschirmgroesse" = Fenster auf visibleFrame aufziehen (Maximieren)
+    // * "Vollbild" = echtes macOS-Fullscreen (eigener Space, Menueleiste weg)
+    // Nur die Vollbild-Kachel aus Slot 0 loest das echte Fullscreen aus; dieselbe
+    // Form in einem anderen Slot maximiert weiterhin nur - so entschieden, damit
+    // eine eigene Anordnung nicht ungewollt Spaces aufmacht.
+    static func testNativeFullscreen() {
+        let store = SnapZoneStore(defaults: freshDefaults("nativefs"))
+        let full = store.groups[0].zones[0]
+        check(full.isFullscreen, "Slot 0 traegt die Vollbild-Zone")
+        check(full.isNativeFullscreen, "Die Vollbild-Zone aus Slot 0 loest echtes Fullscreen aus")
+
+        let half = store.groups[1].zones[0]
+        check(!half.isFullscreen, "Eine Haelfte ist kein Vollbild")
+        check(!half.isNativeFullscreen, "Eine Haelfte loest kein Fullscreen aus")
+
+        // Dieselbe Form, anderer Slot: maximiert, aber kein echtes Fullscreen.
+        store.slots = [[.half, .half], [], [.full], [], []]
+        let elsewhere = store.groups.first { $0.id == 2 }!.zones[0]
+        check(elsewhere.isFullscreen, "Auch anderswo fuellt .full den Bildschirm")
+        check(!elsewhere.isNativeFullscreen,
+              "Vollbild ausserhalb von Slot 0 maximiert nur, statt in Fullscreen zu gehen")
+    }
+
+    // Das Ad-hoc-Layout fuer "keine Zone getroffen, aber im Maximier-Bereich".
+    static func testMaximizedLayout() {
+        let layout = SnapLayout.maximized
+        let screen = CGRect(x: 100, y: 50, width: 1600, height: 900)
+        check(rectsAlmostEqual(layout.compute(screen), screen),
+              "Maximieren liefert genau die uebergebene Bildschirmflaeche, bekommen: \(layout.compute(screen))")
+        check(layout.isFullscreen, "Maximieren fuellt geometrisch den ganzen Bildschirm")
+        check(!layout.isNativeFullscreen,
+              "Maximieren ist ausdruecklich KEIN echtes Fullscreen")
+        checkEqual(layout.groupID, -1, "Maximieren gehoert zu keiner Aufteilung")
+        check(layout.title != "Vollbild",
+              "Eigener Titel - sonst kollidiert der Vorschau-Cache mit der Vollbild-Kachel")
+    }
+
+    // Wo gilt "keine Zone getroffen" als Maximieren?
+    // Im Panel selbst (also in den Luecken zwischen den Kacheln) und in dem
+    // Streifen DARUEBER bis zum oberen Bildschirmrand. Ueberall sonst passiert
+    // nichts - ein Loslassen mitten auf dem Schreibtisch darf das Fenster nicht
+    // ungefragt aufziehen.
+    static func testPanelHitRegion() {
+        let screen = CGRect(x: 0, y: 0, width: 1600, height: 1000)
+        let panel = CGRect(x: 600, y: 900, width: 400, height: 60)
+
+        func hit(_ x: Double, _ y: Double) -> Bool {
+            SnapPanelHitRegion.isMaximize(point: CGPoint(x: x, y: y),
+                                          panelFrame: panel, screenFrame: screen)
+        }
+
+        check(hit(800, 930), "Mitten im Panel (neben den Kacheln) maximiert")
+        check(hit(800, 980), "Oberhalb des Panels maximiert")
+        check(hit(800, 1000), "Direkt am oberen Bildschirmrand maximiert")
+        check(hit(600, 960), "Die linke Panelkante gehoert noch dazu")
+        check(hit(1000, 900), "Die rechte untere Panelecke gehoert noch dazu")
+
+        check(!hit(800, 899), "Unterhalb des Panels passiert nichts")
+        check(!hit(800, 400), "Mitten auf dem Schreibtisch passiert nichts")
+        check(!hit(599, 930), "Links neben dem Panel passiert nichts")
+        check(!hit(1001, 930), "Rechts neben dem Panel passiert nichts")
+        check(!hit(800, 1001), "Oberhalb des Bildschirms passiert nichts")
+        check(!hit(400, 980), "Der Streifen oben gilt nur ueber der Panelbreite")
     }
 
     // MARK: Store

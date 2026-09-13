@@ -2081,6 +2081,57 @@ func setWindowFrame(win: AXUIElement, target: CGRect, screenH: CGFloat) {
     }
 }
 
+/// Schickt das Fenster in den echten macOS-Vollbildmodus - eigener Space,
+/// Menueleiste weg. Das Gegenstueck zum blossen Aufziehen auf `visibleFrame`.
+///
+/// `onFailure` laeuft auf dem Main-Thread: Dialoge und aeltere Apps unterstuetzen
+/// AXFullScreen teils nicht und brauchen deshalb Maximieren als Ersatz.
+func setWindowFullscreen(pid: pid_t, window: AXUIElement?, onFailure: @escaping () -> Void) {
+    DispatchQueue.global(qos: .userInteractive).async {
+        beginProgrammaticMove()
+        defer {
+            // Deutlich laenger als bei einem Snap: der Space-Wechsel animiert rund eine
+            // Sekunde und meldet die ganze Zeit Fensterbewegungen, die sonst als neue
+            // Nutzergeste durchrutschen und das Panel gleich wieder aufziehen wuerden.
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1.2) { endProgrammaticMove() }
+        }
+        let axApp = AXUIElementCreateApplication(pid)
+        AXUIElementSetMessagingTimeout(axApp, 0.4)
+
+        let win: AXUIElement
+        if let explicit = window {
+            win = explicit
+        } else {
+            var ref: CFTypeRef?
+            guard AXUIElementCopyAttributeValue(axApp, kAXFocusedWindowAttribute as CFString, &ref) == .success,
+                  let winRef = ref else {
+                DispatchQueue.main.async { onFailure() }
+                return
+            }
+            win = winRef as! AXUIElement
+        }
+
+        // Der Fullscreen-Wechsel kehrt erst nach der Systemanimation zurueck. Mit den
+        // 0,4 s der Snap-Aufrufe liefe er regelmaessig in einen Timeout, und der
+        // Ersatzweg wuerde das Fenster mitten in der Animation wieder aufziehen.
+        AXUIElementSetMessagingTimeout(win, 2.0)
+
+        var fullscreenRef: CFTypeRef?
+        let alreadyFullscreen = AXUIElementCopyAttributeValue(win, "AXFullScreen" as CFString,
+                                                              &fullscreenRef) == .success
+            && (fullscreenRef as? Bool) == true
+        if !alreadyFullscreen {
+            guard AXUIElementSetAttributeValue(win, "AXFullScreen" as CFString, kCFBooleanTrue) == .success else {
+                DispatchQueue.main.async { onFailure() }
+                return
+            }
+        }
+
+        // Im eigenen Space ist ein alter Snap-Rahmen kein sinnvolles Wiederherstellungsziel.
+        DispatchQueue.main.async { WindowRestoreStore.shared.clear(pid) }
+    }
+}
+
 /// Laufende Snap-Animationen pro Prozess. Ein neuer Snap erhoeht die Generation,
 /// dadurch beendet sich eine noch laufende aeltere Animation sofort selbst.
 private let snapGenerationLock = NSLock()
@@ -2348,11 +2399,21 @@ func snapWindow(pid: pid_t, layout: SnapLayout, window: AXUIElement? = nil) {
     // Jeder Snap-Weg laeuft hier durch, deshalb wird die Vorher-Groesse zentral an
     // genau einer Stelle festgehalten - unabhaengig davon, ob der Snap aus dem Panel,
     // per Drop oder aus dem App-Launcher kam.
-    animateFocusedWindow(pid: pid, to: target, animateSize: isFullscreen, window: window) { startFrame, actual in
-        WindowRestoreStore.shared.recordSnap(pid: pid,
-                                             freeFrameCandidate: startFrame,
-                                             snappedFrame: actual)
+    let animateSnap = {
+        animateFocusedWindow(pid: pid, to: target, animateSize: isFullscreen, window: window) { startFrame, actual in
+            WindowRestoreStore.shared.recordSnap(pid: pid,
+                                                 freeFrameCandidate: startFrame,
+                                                 snappedFrame: actual)
+        }
     }
+    // Echtes Fullscreen ist kein Rahmen, den man animieren koennte - es ist ein
+    // Zustand des Fensters. Klappt er nicht, bleibt als Ersatz genau das, was die
+    // Vollbild-Kachel bisher tat: auf die nutzbare Flaeche aufziehen.
+    guard !layout.isNativeFullscreen else {
+        setWindowFullscreen(pid: pid, window: window, onFailure: animateSnap)
+        return
+    }
+    animateSnap()
 }
 
 func launchAndSnap(appItem: AppItem, layout: SnapLayout) {
@@ -3096,19 +3157,19 @@ class SnapPanel: NSPanel {
         previewedLayout = layout
         applyPreviewColors(for: layout)
 
-        let vf = screen.visibleFrame
-        if pw.frame != vf {
-            pw.setFrame(vf, display: false)
+        let referenceFrame = layout.isNativeFullscreen ? screen.frame : screen.visibleFrame
+        if pw.frame != referenceFrame {
+            pw.setFrame(referenceFrame, display: false)
             CATransaction.begin()
             CATransaction.setDisableActions(true)
-            pw.contentView?.layer?.frame = CGRect(origin: .zero, size: vf.size)
+            pw.contentView?.layer?.frame = CGRect(origin: .zero, size: referenceFrame.size)
             CATransaction.commit()
         }
         if !pw.isVisible { pw.orderFrontRegardless() }
 
         // Zielrechteck in Fensterkoordinaten (Ursprung unten links).
-        let target = layout.compute(vf)
-        let local = CGRect(x: target.minX - vf.minX, y: target.minY - vf.minY,
+        let target = layout.compute(referenceFrame)
+        let local = CGRect(x: target.minX - referenceFrame.minX, y: target.minY - referenceFrame.minY,
                            width: target.width, height: target.height)
 
         if isFirstShow {
@@ -3195,7 +3256,9 @@ class SnapPanel: NSPanel {
                 return gv.group.zones.first
             }
         }
-        return nil
+        guard let screenFrame = self.screen?.frame ?? NSScreen.main?.frame else { return nil }
+        return SnapPanelHitRegion.isMaximize(point: screenPoint, panelFrame: self.frame,
+                                             screenFrame: screenFrame) ? SnapLayout.maximized : nil
     }
 
     func show(on screen: NSScreen, scale: CGFloat = 1.0) {
